@@ -1,4 +1,5 @@
 *.pyc
 /*.pyc
 *.pth
+checkpoints/
 __pycache__/
