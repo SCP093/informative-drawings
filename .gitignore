@@ -2,4 +2,5 @@
 /*.pyc
 *.pth
 checkpoints/
+.idea/
 __pycache__/
