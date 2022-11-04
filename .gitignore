@@ -3,4 +3,6 @@
 *.pth
 checkpoints/
 .idea/
+results/
+examples/
 __pycache__/
