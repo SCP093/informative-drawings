@@ -22,7 +22,7 @@ import util.util as util
 import networks
 import numpy as np
 import os
-# test
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', type=str, help='name of this experiment')
 parser.add_argument('--checkpoints_dir', type=str, default='checkpoints', help='Where checkpoints are saved')
