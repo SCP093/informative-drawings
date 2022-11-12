@@ -256,12 +256,19 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
         #################### Generator ####################
 
+        # predict depth map from real sketch
+        geom_input = real_B
+        if geom_input.size()[1] == 1:
+            geom_input = geom_input.repeat(1, 3, 1, 1)
+        _, geom_input = net_recog(geom_input)
+        pred_geom = netGeom(geom_input)
+        pred_geom = (pred_geom + 1) / 2.0
 
-        fake_B = netG_A(real_A) # G_A(A)
-        rec_A = netG_B(fake_B)   # G_B(G_A(A))
+        fake_B = netG_A(real_A, img_depth)  # G_A(A)
+        rec_A = netG_B(fake_B, img_depth)   # G_B(G_A(A))
 
-        fake_A = netG_B(real_B)  # G_B(B)
-        rec_B = netG_A(fake_A) # G_A(G_B(B))
+        fake_A = netG_B(real_B, pred_geom)  # G_B(B)
+        rec_B = netG_A(fake_A, pred_geom)  # G_A(G_B(B))
 
         loss_cycle_Geom = 0
         if opt.use_geom == 1:
