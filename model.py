@@ -33,8 +33,6 @@ class SPADE(nn.Module):
 
         if param_free_norm_type == 'instance':
             self.param_free_norm = nn.InstanceNorm2d(norm_nc, affine=False)
-        elif param_free_norm_type == 'syncbatch':
-            self.param_free_norm = SynchronizedBatchNorm2d(norm_nc, affine=False)
         elif param_free_norm_type == 'batch':
             self.param_free_norm = nn.BatchNorm2d(norm_nc, affine=False)
         else:
@@ -70,6 +68,26 @@ class SPADE(nn.Module):
 
 
 norm_layer = nn.InstanceNorm2d
+
+
+class SPADEResidualBlock(nn.Module):
+    def __init__(self, in_features):
+        super(SPADEResidualBlock, self).__init__()
+
+        conv_block = [nn.ReflectionPad2d(1),
+                      nn.Conv2d(in_features, in_features, 3),
+                      SPADE("spadeinstance3x3", in_features, in_features),
+                      nn.ReLU(inplace=True),
+                      nn.ReflectionPad2d(1),
+                      nn.Conv2d(in_features, in_features, 3),
+                      SPADE("spadeinstance3x3", in_features, in_features)
+                      ]
+
+        self.conv_block = nn.Sequential(*conv_block)
+
+    def forward(self, x, depth):
+        return x + self.conv_block(x, depth)
+
 
 class ResidualBlock(nn.Module):
     def __init__(self, in_features):
@@ -116,7 +134,8 @@ class Generator(nn.Module):
         model2 = []
         # Residual blocks
         for _ in range(n_residual_blocks):
-            model2 += [ResidualBlock(in_features)]
+            model2 += [SPADEResidualBlock(in_features)]
+            # model2 += [ResidualBlock(in_features)]
         self.model2 = nn.Sequential(*model2)
 
         # Upsampling
@@ -141,7 +160,7 @@ class Generator(nn.Module):
     def forward(self, x, depth, cond=None):
         out = self.model0(x)
         out = self.model1(out)
-        out = self.model2(out)
+        out = self.model2(out, depth)
         out = self.model3(out)
         out = self.model4(out)
 
