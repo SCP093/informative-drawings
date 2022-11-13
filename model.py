@@ -86,7 +86,7 @@ class SPADEResidualBlock(nn.Module):
         self.conv_block = nn.Sequential(*conv_block)
 
     def forward(self, x, depth):
-        return x + self.conv_block(x, depth)
+        return x + self.conv_block(x, depth), depth
 
 
 class ResidualBlock(nn.Module):
@@ -160,7 +160,7 @@ class Generator(nn.Module):
     def forward(self, x, depth, cond=None):
         out = self.model0(x)
         out = self.model1(out)
-        out = self.model2(out, depth)
+        out, _ = self.model2(out, depth)  # _ is depth
         out = self.model3(out)
         out = self.model4(out)
 
