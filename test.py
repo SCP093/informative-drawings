@@ -121,15 +121,23 @@ with torch.no_grad():
 
     for i, batch in enumerate(dataloader):
         if i > opt.how_many:
-            break;
+            break
         img_r  = Variable(batch['r']).cuda()
         img_depth  = Variable(batch['depth']).cuda()
         real_A = img_r
 
         name = batch['name'][0]
-        
+
+        # predict depth map from real sketch
+        geom_input = image
+        if geom_input.size()[1] == 1:
+            geom_inpt = geom_input.repeat(1, 3, 1, 1)
+        _, geom_input = net_recog(geom_input)
+        geom = netGeom(geom_input)
+        geom = (geom + 1) / 2.0
+
         input_image = real_A
-        image = net_G(input_image, img_depth)
+        image = net_G(input_image, geom)
         save_image(image.data, full_output_dir+'/%s_out.png' % name)
 
         if (opt.predict_depth == 1):
