@@ -99,7 +99,7 @@ class SPADEResidualBlock(nn.Module):
         print("conv_block1")
         out = self.norm_layer1(out, depth)
         print("norm_layer1")
-        return x + out, depth
+        return x + out
 
 
 class ResidualBlock(nn.Module):
@@ -175,7 +175,8 @@ class Generator(nn.Module):
         out = self.model1(out)
         print(out.shape)
         print(depth.shape)
-        out = self.model2(depth)  # _ is depth
+        for m in self.model2:
+            out = m(out, depth)
         out = self.model3(out)
         out = self.model4(out)
 
