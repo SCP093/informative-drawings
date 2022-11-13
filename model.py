@@ -78,13 +78,13 @@ class SPADEResidualBlock(nn.Module):
                        nn.Conv2d(in_features, in_features, 3)
                        ]
         self.conv_block0 = nn.Sequential(*conv_block0)
-        self.norm_layer0 = SPADE("spadeinstance3x3", in_features, in_features)
+        self.norm_layer0 = SPADE("spadeinstance3x3", in_features, 3)
         conv_block1 = [nn.ReLU(inplace=True),
                        nn.ReflectionPad2d(1),
                        nn.Conv2d(in_features, in_features, 3)
                        ]
         self.conv_block1 = nn.Sequential(*conv_block1)
-        self.norm_layer1 = SPADE("spadeinstance3x3", in_features, in_features)
+        self.norm_layer1 = SPADE("spadeinstance3x3", in_features, 3)
 
     def forward(self, x, depth):
         print("shape:")
