@@ -127,7 +127,7 @@ with torch.no_grad():
         real_A = img_r
 
         name = batch['name'][0]
-
+        print(img_depth.shape)
         input_image = real_A
         image = net_G(input_image, img_depth)
         save_image(image.data, full_output_dir+'/%s_out.png' % name)
