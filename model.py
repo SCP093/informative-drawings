@@ -87,18 +87,10 @@ class SPADEResidualBlock(nn.Module):
         self.norm_layer1 = SPADE("spadeinstance3x3", in_features, 3)
 
     def forward(self, x, depth):
-        print("shape:")
-        print(x.shape)
-        print(depth.shape)
-        print("start")
         out = self.conv_block0(x)
-        print("conv_block0")
         out = self.norm_layer0(out, depth)
-        print("norm_layer0")
         out = self.conv_block1(out)
-        print("conv_block1")
         out = self.norm_layer1(out, depth)
-        print("norm_layer1")
         return x + out
 
 
@@ -173,8 +165,6 @@ class Generator(nn.Module):
     def forward(self, x, depth, cond=None):
         out = self.model0(x)
         out = self.model1(out)
-        print(out.shape)
-        print(depth.shape)
         for m in self.model2:
             out = m(out, depth)
         out = self.model3(out)
