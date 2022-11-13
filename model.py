@@ -87,12 +87,19 @@ class SPADEResidualBlock(nn.Module):
         self.norm_layer1 = SPADE("spadeinstance3x3", in_features, in_features)
 
     def forward(self, x, depth):
-        short_cut = x
-        x = self.conv_block0(x)
-        x = self.norm_layer0(x, depth)
-        x = self.conv_block1(x)
-        x = self.norm_layer1(x, depth)
-        return short_cut + x, depth
+        print("shape:")
+        print(x.shape)
+        print(depth.shape)
+        print("start")
+        out = self.conv_block0(x)
+        print("conv_block0")
+        out = self.norm_layer0(out, depth)
+        print("norm_layer0")
+        out = self.conv_block1(out)
+        print("conv_block1")
+        out = self.norm_layer1(out, depth)
+        print("norm_layer1")
+        return x + out, depth
 
 
 class ResidualBlock(nn.Module):
