@@ -175,7 +175,7 @@ class Generator(nn.Module):
         out = self.model1(out)
         print(out.shape)
         print(depth.shape)
-        out = self.model2(out)  # _ is depth
+        out = self.model2(out, depth)  # _ is depth
         out = self.model3(out)
         out = self.model4(out)
 
