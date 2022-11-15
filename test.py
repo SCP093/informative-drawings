@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 from torch.autograd import Variable
 import torch
 
-from model import Generator, GlobalGenerator2, InceptionV3
+from model import Generator, SPADEGenerator, GlobalGenerator2, InceptionV3
 from dataset import UnpairedDepthDataset
 from PIL import Image
 import numpy as np
@@ -65,7 +65,7 @@ with torch.no_grad():
     # Networks
 
     net_G = 0
-    net_G = Generator(opt.input_nc, opt.output_nc, opt.n_blocks)
+    net_G = SPADEGenerator(opt.input_nc, opt.output_nc, opt.n_blocks)
     net_G.cuda()
 
     net_GB = 0
