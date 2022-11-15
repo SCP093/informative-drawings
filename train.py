@@ -9,7 +9,7 @@ from torch.autograd import Variable
 from PIL import Image
 import torch
 
-from model import Generator, GlobalGenerator2, InceptionV3
+from model import Generator, SPADEGenerator, GlobalGenerator2, InceptionV3
 # from utils import ReplayBuffer
 from utils import LambdaLR
 from utils import channel2width
@@ -113,7 +113,7 @@ if torch.cuda.is_available() and not opt.cuda:
 # Networks
 
 netG_A = 0
-netG_A = Generator(opt.input_nc, opt.output_nc, opt.n_blocks)
+netG_A = SPADEGenerator(opt.input_nc, opt.output_nc, opt.n_blocks)
 netG_B = Generator(opt.output_nc, opt.input_nc, opt.n_blocks)
 
 if opt.use_geom == 1:
@@ -245,7 +245,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         labels = Variable(batch['label']).cuda()
 
         real_B = 0
-        real_B  = Variable(batch['line']).cuda()
+        real_B = Variable(batch['line']).cuda()
 
         recover_geom = img_depth
         batch_size = real_A.size()[0]
@@ -265,9 +265,9 @@ for epoch in range(opt.epoch, opt.n_epochs):
         pred_geom = (pred_geom + 1) / 2.0
 
         fake_B = netG_A(real_A, img_depth)  # G_A(A)
-        rec_A = netG_B(fake_B, img_depth)   # G_B(G_A(A))
+        rec_A = netG_B(fake_B)   # G_B(G_A(A))
 
-        fake_A = netG_B(real_B, pred_geom)  # G_B(B)
+        fake_A = netG_B(real_B)  # G_B(B)
         rec_B = netG_A(fake_A, pred_geom)  # G_A(G_B(B))
 
         loss_cycle_Geom = 0
