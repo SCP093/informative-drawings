@@ -163,6 +163,9 @@ class SPADEGenerator(nn.Module):
         self.model4 = nn.Sequential(*model4)
 
     def forward(self, x, depth, cond=None):
+        random_tensor = torch.rand(1, dtype=depth.dtype, device=depth.device)
+        random_tensor.floor_()
+        depth = depth * random_tensor
         out = self.model0(x)
         out = self.model1(out)
         for m in self.model2:
