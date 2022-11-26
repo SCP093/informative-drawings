@@ -147,7 +147,8 @@ class SPADEGenerator(nn.Module):
         out_features = in_features//2
         for _ in range(2):
             model3 += [nn.ConvTranspose2d(in_features, out_features, 3, stride=2, padding=1, output_padding=1),
-                       norm_layer(out_features),
+                       # norm_layer(out_features),
+                       SPADE("spadeinstance3x3", out_features, 3),
                        nn.ReLU(inplace=True)]
             in_features = out_features
             out_features = in_features//2
@@ -166,7 +167,11 @@ class SPADEGenerator(nn.Module):
         out = self.model1(out)
         for m in self.model2:
             out = m(out, depth)
-        out = self.model3(out)
+        for m in self.model3:
+            if isinstance(m, SPADE):
+                out = m(out, depth)
+            else:
+                out = m(out)
         out = self.model4(out)
 
         return out
