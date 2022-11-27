@@ -52,6 +52,7 @@ parser.add_argument('--predict_depth', type=int, default=0, help='run geometry p
 parser.add_argument('--save_input', type=int, default=0, help='save input image')
 parser.add_argument('--reconstruct', type=int, default=0, help='get reconstruction')
 parser.add_argument('--how_many', type=int, default=100, help='number of images to test')
+parser.add_argument('--use_depth', type=int, default=1, help='1: use depth, 0: do not use depth')
 
 opt = parser.parse_args()
 print(opt)
@@ -129,7 +130,9 @@ with torch.no_grad():
         name = batch['name'][0]
 
         input_image = real_A
-        image = net_G(input_image, img_depth)
+        if opt.use_depth == 0:
+            depth = img_depth * 0
+        image = net_G(input_image, depth)
         save_image(image.data, full_output_dir+'/%s_out.png' % name)
 
         if (opt.predict_depth == 1):

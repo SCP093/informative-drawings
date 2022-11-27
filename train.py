@@ -256,19 +256,14 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
         #################### Generator ####################
 
-        # predict depth map from real sketch
-        # geom_input = real_B
-        # if geom_input.size()[1] == 1:
-        #     geom_input = geom_input.repeat(1, 3, 1, 1)
-        # _, geom_input = net_recog(geom_input)
-        # pred_geom = netGeom(geom_input)
-        # pred_geom = (pred_geom + 1) / 2.0
-
-        fake_B = netG_A(real_A, img_depth)  # G_A(A)
+        random_tensor = torch.rand(1, dtype=img_depth.dtype, device=img_depth.device)
+        random_tensor.floor_()
+        depth = img_depth * random_tensor
+        fake_B = netG_A(real_A, depth)  # G_A(A)
         rec_A = netG_B(fake_B)   # G_B(G_A(A))
 
         fake_A = netG_B(real_B)  # G_B(B)
-        # rec_B = netG_A(fake_A, pred_geom)  # G_A(G_B(B))
+        rec_B = netG_A(fake_A, fake_A * 0)  # G_A(G_B(B))
 
         loss_cycle_Geom = 0
         if opt.use_geom == 1:
@@ -293,12 +288,12 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
         # Forward cycle loss || G_B(G_A(A)) - A||
         loss_cycle_A = criterionCycle(rec_A, real_A)
-        # loss_cycle_B = criterionCycleB(rec_B, real_B)
+        loss_cycle_B = criterionCycleB(rec_B, real_B)
         # combined loss and calculate gradients
 
         loss_GAN = loss_G_A + loss_G_B
-        # loss_RC = loss_cycle_A + loss_cycle_B  # remove loss_cycle_B
-        loss_RC = loss_cycle_A
+        loss_RC = loss_cycle_A + loss_cycle_B  # remove loss_cycle_B
+        # loss_RC = loss_cycle_A
 
         loss_G = cond_cycle*loss_RC + condGAN*loss_GAN
         loss_G += opt.condGeom*loss_cycle_Geom
