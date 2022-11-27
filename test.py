@@ -132,7 +132,7 @@ with torch.no_grad():
         input_image = real_A
         depth = img_depth
         if opt.use_depth == 0:
-            depth = img_depth * 0
+            depth = depth * 0
         image = net_G(input_image, depth)
         save_image(image.data, full_output_dir+'/%s_out.png' % name)
 
