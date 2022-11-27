@@ -130,6 +130,7 @@ with torch.no_grad():
         name = batch['name'][0]
 
         input_image = real_A
+        depth = img_depth
         if opt.use_depth == 0:
             depth = img_depth * 0
         image = net_G(input_image, depth)
