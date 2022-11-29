@@ -171,7 +171,6 @@ class SPADEGenerator(nn.Module):
             depth = depth
         elif sign == 2:  # depth is zero tensor
             depth = depth * 0
-        print(depth)
         out = self.model0(x)
         out = self.model1(out)
         for m in self.model2:
