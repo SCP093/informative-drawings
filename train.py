@@ -256,14 +256,11 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
         #################### Generator ####################
 
-        random_tensor = torch.rand(1, dtype=img_depth.dtype, device=img_depth.device)
-        random_tensor.floor_()
-        depth = img_depth * random_tensor
-        fake_B = netG_A(real_A, depth)  # G_A(A)
+        fake_B = netG_A(real_A, img_depth, sign=0)  # G_A(A)
         rec_A = netG_B(fake_B)   # G_B(G_A(A))
 
         fake_A = netG_B(real_B)  # G_B(B)
-        rec_B = netG_A(fake_A, fake_A * 0)  # G_A(G_B(B))
+        rec_B = netG_A(fake_A, fake_A, sign=2)  # G_A(G_B(B))
 
         loss_cycle_Geom = 0
         if opt.use_geom == 1:
