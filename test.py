@@ -52,7 +52,7 @@ parser.add_argument('--predict_depth', type=int, default=0, help='run geometry p
 parser.add_argument('--save_input', type=int, default=0, help='save input image')
 parser.add_argument('--reconstruct', type=int, default=0, help='get reconstruction')
 parser.add_argument('--how_many', type=int, default=100, help='number of images to test')
-parser.add_argument('--use_depth', type=int, default=0, help='1: use depth, 0: do not use depth')
+parser.add_argument('--use_depth', type=int, default=0, help='1: use depth, 0: random zero, 2: zero') # the depth should be used
 
 opt = parser.parse_args()
 print(opt)

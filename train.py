@@ -256,7 +256,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
         #################### Generator ####################
 
-        fake_B = netG_A(real_A, img_depth, sign=0)  # G_A(A)
+        fake_B = netG_A(real_A, img_depth, sign=1)  # G_A(A)
         rec_A = netG_B(fake_B)   # G_B(G_A(A))
 
         fake_A = netG_B(real_B)  # G_B(B)
@@ -289,8 +289,8 @@ for epoch in range(opt.epoch, opt.n_epochs):
         # combined loss and calculate gradients
 
         loss_GAN = loss_G_A + loss_G_B
-        loss_RC = loss_cycle_A + loss_cycle_B  # remove loss_cycle_B
-        # loss_RC = loss_cycle_A
+        # loss_RC = loss_cycle_A + loss_cycle_B  # remove loss_cycle_B
+        loss_RC = loss_cycle_A  # do not consider about loss_cycle_B for that it has no depth image --wy
 
         loss_G = cond_cycle*loss_RC + condGAN*loss_GAN
         loss_G += opt.condGeom*loss_cycle_Geom
